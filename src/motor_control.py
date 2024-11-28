@@ -45,7 +45,7 @@ class MotorControl:
 		return (val - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 	def crc_attach(self, data_bytes: bytes):
-		crc_int = self.crc8(data_bytes)
+		crc_int = self.crc8(data_bytes) 
 		data_bytesarray = bytearray(data_bytes)
 		data_bytesarray.append(crc_int)
 		full_cmd = bytes(data_bytesarray)
@@ -58,14 +58,14 @@ class MotorControl:
 	######################
 	### Read/Write cmd ###
 	######################
-	def set_id(self, _id: int):
-		"""
-	 	connect only 1 motor, and call this function to set the ID of that motor
-		"""
+	# def set_id(self, _id: int):
+	# 	"""
+	#  	connect only 1 motor, and call this function to set the ID of that motor
+	# 	"""
 
-		SET_ID = struct.pack(self.str_10bytes, 0xAA, 0x55, 0x53, _id, 0x00, 0x00, 0x00, 0x00, 0x00, 0xDE)
-		for i in range(5):
-			self.ser.write(SET_ID)
+	# 	SET_ID = struct.pack(self.str_10bytes, 0xAA, 0x55, 0x53, _id, 0x00, 0x00, 0x00, 0x00, 0x00, 0xDE)
+	# 	for i in range(5):
+	# 		self.ser.write(SET_ID)
 
 	def send_rpm(self, _id: int, rpm):
 
@@ -84,35 +84,38 @@ class MotorControl:
 		# print(cmd_bytes)
 		# print_info(res)
 
+#############degree##############################
+	# def send_degree(self, _id: int, deg):
+	# 	"""
+	# 	Args:
+	# 	- deg: in degrees
 
-	def send_degree(self, _id: int, deg):
-		"""
-		Args:
-		- deg: in degrees
-
-		Absolute angle position control.
+	# 	Absolute angle position control.
 		
-		"""
+	# 	"""
 
-		raw = int(self.map(deg, 0, 360, 0, 32767))
+	# 	raw = int(self.map(deg, 0, 360, 0, 32767))
 
-		deg_ints = self.Int16ToBytesArray(raw)
-		cmd_bytes = struct.pack(self.str_9bytes, _id, 0x64, deg_ints[0], deg_ints[1], 0x00, 0x00, 0x00, 0x00, 0x00)
-		cmd_bytes = self.crc_attach(cmd_bytes)
+	# 	deg_ints = self.Int16ToBytesArray(raw)
+	# 	cmd_bytes = struct.pack(self.str_9bytes, _id, 0x64, deg_ints[0], deg_ints[1], 0x00, 0x00, 0x00, 0x00, 0x00)
+	# 	cmd_bytes = self.crc_attach(cmd_bytes)
 
-		self.ser.write(cmd_bytes)
-		_,_,_ = self.read_reply(_id)
-		# res = self.ser.read_until(size=10)
-		# print(cmd_bytes)
+	# 	self.ser.write(cmd_bytes)
+	# 	_,_,_ = self.read_reply(_id)
+	# 	# res = self.ser.read_until(size=10)
+	# 	# print(cmd_bytes)
 
-	def set_brake(self, _id: int):
+###########brake#########################
+	# def set_brake(self, _id: int):
 
-		cmd_bytes = struct.pack(self.str_9bytes, _id, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00)
-		cmd_bytes = self.crc_attach(cmd_bytes)
-		self.ser.write(cmd_bytes)
-		res = self.ser.read_until(size=10)
+	# 	cmd_bytes = struct.pack(self.str_9bytes, _id, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00)
+	# 	cmd_bytes = self.crc_attach(cmd_bytes)
+	# 	self.ser.write(cmd_bytes)
+	# 	res = self.ser.read_until(size=10)
 
-		print(res)
+	# 	print(res)
+
+###############set mode######################
 
 	def set_drive_mode(self, _id: int, _mode: int):
 		"""
@@ -131,24 +134,26 @@ class MotorControl:
 		cmd_bytes = struct.pack(self.str_10bytes, _id, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, _mode)
 		self.ser.write(cmd_bytes)
 
-		print(cmd_bytes)
+		# print(cmd_bytes)
 
-	def get_motor_id(self):
+
+##############Motor ID funcition#####################TODO: checkup for this function 
+	# def get_motor_id(self):
 		 
-		 #C8 64 00 00 00 00 00 00 00 DE
+	# 	#C8 64 00 00 00 00 00 00 00 DE
 
-		ID_QUE = struct.pack(self.str_10bytes, 0xC8, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xDE)
-		self.ser.write(ID_QUE)
-		data = self.ser.read_until(size=10)
-		print(data)
-		print_info(f"ID: {data[0]}")
-		print_info(f"Mode: {data[1]}")
-		print_info(f"Error: {data[8]}")
+	# 	ID_QUE = struct.pack(self.str_10bytes, 0xC8, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xDE)
+	# 	self.ser.write(ID_QUE)
+	# 	data = self.ser.read_until(size=10)
+	# 	print(data)
+	# 	# print_info(f"ID: {data[0]}")
+	# 	# print_info(f"Mode: {data[1]}")
+	# 	# print_info(f"Error: {data[8]}")
 
 
 	def get_motor_feedback(self, _id: int):
 
-		fb_req_cmd = struct.pack(self.str_9bytes, _id, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
+		fb_req_cmd = struct.pack(self.str_9bytes, _id, 0x74, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)		
 		fb_req_cmd = self.crc_attach(fb_req_cmd)
 		while not self.ser.writable():
 			print_warning("get_motor_feedback not writable")
@@ -156,6 +161,7 @@ class MotorControl:
 		self.ser.write(fb_req_cmd)
 
 		fb_rpm, fb_cur, error = self.read_reply(_id)
+
 		if error != 0:
 			sensor_error = error & 0b00000001
 			over_current_error = error & 0b00000010
@@ -244,8 +250,8 @@ class MotorControl:
 			if period > timeout:
 				got_reply = True
 				# print_warning("over timeout")
-				ID = _id
-				mode = 0
+				ID = 1
+				mode = 2
 				fb_rpm = self.prev_fb_rpm[_id-1]
 				fb_cur = self.prev_fb_cur[_id-1]
 				error = 0
@@ -258,22 +264,10 @@ if __name__ == "__main__":
 
 	a = MotorControl()
 
-	a.set_drive_mode(0, 2)
-	a.send_degree(0, 0)
+	a.set_drive_mode(1, 2)
+	a.send_rpm(1, 40)
 
-	# a.set_brake(0)
 	while True:
-		fb_rpm = a.get_motor_feedback(0)
+		fb_rpm = a.get_motor_feedback(1)
 		time.sleep(0.1)
 		print(fb_rpm)
-
-	# a.set_drive_mode(3, 2)
-	# a.send_rpm(3, 0)
-		# fd_rpm1  = a.read_reply(2)
-		# fd_rpm2 , fd_crr2, fd_err2 = b.read_reply(3)
-
-		# print(fd_rpm1)
-
-	# a.get_motor_id()
-
-	# a.set_id(1)

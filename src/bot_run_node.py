@@ -6,7 +6,7 @@ from motor_control import MotorControl  # Assume MotorControl is saved in motor_
 class MotorControllerNode(Node):
     def __init__(self):
         super().__init__('motor_controller_node')
-        self.declare_parameter('wheel_radius', 0.045)  # Wheel radius in meters
+        self.declare_parameter('wheel_radius', 0.04)  # Wheel radius in meters
         self.declare_parameter('wheel_base', 0.2)  # Distance between wheels in meters
 
         self.wheel_radius = self.get_parameter('wheel_radius').value
@@ -39,14 +39,14 @@ class MotorControllerNode(Node):
 
         # Send RPM commands to motors
         try:
-            # self.motor_control.send_rpm(0, left_rpm)  # Motor ID 3 for left wheel
-            self.motor_control.send_rpm(3, right_rpm)  # Motor ID 0 for right wheel
+            self.motor_control.send_rpm(1, left_rpm)  # Motor ID 1 for left wheel
+            self.motor_control.send_rpm(2, right_rpm)  # Motor ID  for right wheel
             self.get_logger().info(f"Set left RPM: {left_rpm}, right RPM: {right_rpm}")
 
-            # self.motor_control.get_motor_feedback(2)    # Motor ID 2 feedback 
-            self.motor_control.get_motor_feedback(3)    # Motor ID 3 feedback 
+            leftwheel_rpm,current_fb =self.motor_control.get_motor_feedback(1)    # Motor ID 1 feedback 
+            rightwheel_rpm,current_fb =self.motor_control.get_motor_feedback(2)    # Motor ID 2 feedback
+            self.get_logger().info(f"leftwheelrpm:{leftwheel_rpm},rithwheel:{rightwheel_rpm}")
         
-
         except Exception as e:
             self.get_logger().error(f"Failed to send RPM: {e}")
 
