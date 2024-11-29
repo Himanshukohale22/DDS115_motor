@@ -2,7 +2,7 @@ import serial
 import serial.rs485
 
 ser = serial.rs485.RS485(
-    port='/dev/ttyACM0',  # Update this to your port
+    port='/dev/ttyACM1',  # Update this to your port
     baudrate=115200,
     timeout=0.5           # Timeout for reading response
 )

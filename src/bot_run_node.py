@@ -39,8 +39,8 @@ class MotorControllerNode(Node):
 
         # Send RPM commands to motors
         try:
-            self.motor_control.send_rpm(1, left_rpm)  # Motor ID 1 for left wheel
-            self.motor_control.send_rpm(2, right_rpm)  # Motor ID  for right wheel
+            self.motor_control.send_rpm(1, right_rpm)  # Motor ID 1 for left wheel
+            self.motor_control.send_rpm(2, left_rpm)  # Motor ID  for right wheel
             self.get_logger().info(f"Set left RPM: {left_rpm}, right RPM: {right_rpm}")
 
             leftwheel_rpm,current_fb =self.motor_control.get_motor_feedback(1)    # Motor ID 1 feedback 
