@@ -15,12 +15,16 @@ find_package(ament_cmake REQUIRED)
 install(DIRECTORY src launch
         DESTINATION share/${PROJECT_NAME}/
 )
-
 install(PROGRAMS src/bot_run_node.py
         DESTINATION lib/${PROJECT_NAME}
 )
-
 install(PROGRAMS src/motor_control.py
+        DESTINATION lib/${PROJECT_NAME}
+)
+install(PROGRAMS src/motor_odom.py
+        DESTINATION lib/${PROJECT_NAME}
+)
+install(PROGRAMS src/motor_control_fb.py
         DESTINATION lib/${PROJECT_NAME}
 )
 
